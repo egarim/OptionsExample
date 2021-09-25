@@ -4,6 +4,25 @@ using System.Linq;
 
 namespace OptionsExample
 {
+    public class ConfigureAllSlackApiSettings : IConfigureNamedOptions<SlackApiSettings>
+    {
+        // inject the PublicSlackDetailsService directly
+        private readonly PublicSlackDetailsService _service;
+        public ConfigureAllSlackApiSettings(PublicSlackDetailsService service)
+        {
+            _service = service;
+        }
+
+        // Configure all instances
+        public void Configure(string name, SlackApiSettings options)
+        {
+            // we don't care which instance it is, just set the URL!
+            options.WebhookUrl = _service.GetPublicWebhookUrl();
+        }
+
+        // This won't be called, but is required for the interface
+        public void Configure(SlackApiSettings options) => Configure(Options.DefaultName, options);
+    }
     public class ConfigurePublicSlackApiSettings : IConfigureNamedOptions<SlackApiSettings>
     {
         // inject the PublicSlackDetailsService directly

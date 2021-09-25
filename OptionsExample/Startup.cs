@@ -27,6 +27,36 @@ namespace OptionsExample
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            SimpleConfiguration(services);
+            ConfigureAll(services);
+
+
+            //Consumer
+            services.AddScoped<SlackNotificationService>();
+
+        }
+
+        private void ConfigureAll(IServiceCollection services)
+        {
+            // Configure ALL options instances, both named and default
+            //services.ConfigureAll<SlackApiSettings>(Configuration.GetSection("SlackApi:GeneralChannel"));
+            services.ConfigureAll<SlackApiSettings>((options) => Configuration.GetSection("SlackApi:GeneralChannel"));
+            services.ConfigureAll<SlackApiSettings>(options => options.DisplayName = "Unknown");
+
+            // Override values for named options
+            services.Configure<SlackApiSettings>("Dev", Configuration.GetSection("SlackApi:DevChannel"));
+            services.Configure<SlackApiSettings>("Public", Configuration.GetSection("SlackApi:PublicChannel"));
+
+            // Override values for default options 
+            //this is fixed the original line was this
+            //services.Configure<SlackApiSettings>(() => options.DisplayName = "default");
+
+            services.Configure<SlackApiSettings>((options) => options.DisplayName = "default");
+        }
+
+        private void SimpleConfiguration(IServiceCollection services)
+        {
+         
 
             services.Configure<SlackApiSettings>("Dev", Configuration.GetSection("SlackApi:DevChannel"));
             services.Configure<SlackApiSettings>("General", Configuration.GetSection("SlackApi:GeneralChannel"));
@@ -40,12 +70,6 @@ namespace OptionsExample
 
             // Add named options configuration AFTER other configuration
             services.AddSingleton<IConfigureOptions<SlackApiSettings>, ConfigurePublicSlackApiSettings>();
-
-
-
-            //Consumer
-            services.AddScoped<SlackNotificationService>();
-           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
