@@ -1,0 +1,2 @@
+﻿Based on this article
+https://andrewlock.net/configuring-named-options-using-iconfigurenamedoptions-and-configureall/

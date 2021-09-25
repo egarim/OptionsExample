@@ -12,6 +12,9 @@ namespace OptionsExample
             SlackApiSettings devSettings = options.Get("Dev");
             SlackApiSettings generalSettings = options.Get("General");
             SlackApiSettings publicSettings = options.Get("Public");
+
+            // fetch the default unnamed options
+            SlackApiSettings defaultSettings = options.Value;
         }
     }
 }
